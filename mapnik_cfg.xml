@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Map srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs +over" background-color="rgb(70,130,180)">
+  <Style name="My Style">
+    <Rule>
+      <PolygonSymbolizer fill="rgb(206,154,156)"/>
+      <LineSymbolizer stroke="rgb(106,106,106)"/>
+    </Rule>
+  </Style>
+  <Layer name="AllWorld" srs="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs">
+    <StyleName>My Style</StyleName>
+    <Datasource>
+      <Parameter name="dbname">map_db</Parameter>
+      <Parameter name="host">127.0.01</Parameter>
+      <Parameter name="password">12345</Parameter>
+      <Parameter name="table">planet_osm_polygon</Parameter>
+      <Parameter name="type">postgis</Parameter>
+      <Parameter name="user">map_app</Parameter>
+    </Datasource>
+  </Layer>
+</Map>

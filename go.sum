@@ -1,0 +1,8 @@
+github.com/fawick/go-mapnik v0.0.0-20150804175644-addbd46720f6 h1:v4slwL1xR0J85BHc1XaZwTIyvP4kNYGxNx0/cUcARrQ=
+github.com/fawick/go-mapnik v0.0.0-20150804175644-addbd46720f6/go.mod h1:jYrNBtOVujI/zzBIYHcRDYLlFW3yaXYIN7jO/3iHifU=
+github.com/lib/pq v1.10.5 h1:J+gdV2cUmX7ZqL2B0lFcW0m+egaHC2V3lpO8nWxyYiQ=
+github.com/lib/pq v1.10.5/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
+github.com/omniscale/go-mapnik v1.1.1 h1:ufNQvCFfIyazNr0NsRVzPj0kVTn493x/jpRBMektbdQ=
+github.com/omniscale/go-mapnik v1.1.1/go.mod h1:FEKK4SOs7ynF29tWDrfGJe3Wu6jFiw8BoCWBhZXUmcY=
+github.com/tidwall/mvt v0.1.2 h1:hRNN7ZybDmfksMEF/H61F7v65uBmG9uFDr+xTOu2Opw=
+github.com/tidwall/mvt v0.1.2/go.mod h1:UDWI77bePzGClhFHsrPWM9SyzYr9NMZy/uB7BcHXymQ=
