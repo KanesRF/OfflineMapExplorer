@@ -1,8 +1,8 @@
-github.com/fawick/go-mapnik v0.0.0-20150804175644-addbd46720f6 h1:v4slwL1xR0J85BHc1XaZwTIyvP4kNYGxNx0/cUcARrQ=
-github.com/fawick/go-mapnik v0.0.0-20150804175644-addbd46720f6/go.mod h1:jYrNBtOVujI/zzBIYHcRDYLlFW3yaXYIN7jO/3iHifU=
-github.com/lib/pq v1.10.5 h1:J+gdV2cUmX7ZqL2B0lFcW0m+egaHC2V3lpO8nWxyYiQ=
-github.com/lib/pq v1.10.5/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
-github.com/omniscale/go-mapnik v1.1.1 h1:ufNQvCFfIyazNr0NsRVzPj0kVTn493x/jpRBMektbdQ=
-github.com/omniscale/go-mapnik v1.1.1/go.mod h1:FEKK4SOs7ynF29tWDrfGJe3Wu6jFiw8BoCWBhZXUmcY=
-github.com/tidwall/mvt v0.1.2 h1:hRNN7ZybDmfksMEF/H61F7v65uBmG9uFDr+xTOu2Opw=
-github.com/tidwall/mvt v0.1.2/go.mod h1:UDWI77bePzGClhFHsrPWM9SyzYr9NMZy/uB7BcHXymQ=
+github.com/KanesRF/go-mapnik/v3 v3.0.0 h1:uZgEkp9v9QVaWkTJ78EegAI3yS4lZOD4dbNX4SGptck=
+github.com/KanesRF/go-mapnik/v3 v3.0.0/go.mod h1:/iA12skyd5K5L68SESLMQXE7bHf+1e+MGqVgGC9fOdE=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
+github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/hashicorp/golang-lru v0.5.4 h1:YDjusn29QI/Das2iO9M0BHnIbxPeyuCHsjMW+lJfyTc=
+github.com/hashicorp/golang-lru v0.5.4/go.mod h1:iADmTwqILo4mZ8BN3D2Q6+9jd8WM5uGBxy+E8yxSoD4=
+github.com/omniscale/go-mapnik/v2 v2.0.1 h1:wv8f7tAiJ35g6j8COLK1u7/KdRAMSn80qEuMahuoIf4=
+github.com/omniscale/go-mapnik/v2 v2.0.1/go.mod h1:SIhG2O5AhbSSklcaQYYYnQHGlre1yNYExg7gLIQ7+Jg=
