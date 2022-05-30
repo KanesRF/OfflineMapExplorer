@@ -1,5 +1,5 @@
 patterns
-cmd/*
 style
 symbols
 data
+cmd/*

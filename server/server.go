@@ -55,7 +55,11 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	tileRender := queue.GetTileRender()
 	defer queue.PutTileRender(tileRender)
 	image, err := tileRender.Render(x, y, z)
+	if len(image) < 200 {
+		fmt.Println("Bad render for ", render.Coords{X: x, Y: y, Z: z}, len(image))
+	}
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 	w.Write(image)
@@ -67,17 +71,13 @@ func mainPageHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "js/main.html")
 }
 
-func resourceHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.Path)
-}
-
 func main() {
 	var err error
 	cache, err = lru.New(1024)
 	if err != nil {
 		log.Fatal(err)
 	}
-	queue.InitQueue(20, "style.xml")
+	queue.InitQueue(10, "style.xml")
 	router := mux.NewRouter()
 	router.HandleFunc("/", mainPageHandler)
 	router.HandleFunc("/{z:[0-9]+}/{x:[0-9]+}/{y:[0-9]+}.png", tileHandler).Methods("GET")
@@ -85,10 +85,8 @@ func main() {
 	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir("./js/"))))
 
 	srv := &http.Server{
-		Handler:      router,
-		Addr:         "127.0.0.1:8080",
-		WriteTimeout: 35 * time.Second,
-		ReadTimeout:  35 * time.Second,
+		Handler: http.TimeoutHandler(router, time.Second*30, ""),
+		Addr:    "127.0.0.1:8080",
 	}
 	log.Fatal(srv.ListenAndServeTLS("server.crt", "server.key"))
 }

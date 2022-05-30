@@ -31,7 +31,7 @@ func main() {
 
 	queue.InitQueue(20, "style.xml")
 	coordSender := make(chan render.Coords)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		go renderPool(coordSender)
 	}
 	for x := *xCenter - *radius; x < int(math.Pow(2, float64(*zoom))) && x < *xCenter+*radius; x++ {

@@ -3,6 +3,7 @@ package render
 import (
 	"fmt"
 	"log"
+	"runtime"
 	"strconv"
 	"sync"
 
@@ -26,7 +27,6 @@ func makeCoords(x, y float64, z int) (p0x, p0y, p1x, p1y float64) {
 	p0y = boundY1 - (boundY1-boundY0)/float64(zoom)*(y+1)
 	p1x = boundX0 + (boundX1-boundX0)/float64(zoom)*(x+1)
 	p1y = boundY1 - (boundY1-boundY0)/float64(zoom)*(y)
-	fmt.Println(x, y, z, " To ", p0x, p0y, p1x, p1y)
 	return p0x, p0y, p1x, p1y
 }
 
@@ -50,13 +50,14 @@ func (renderQueue *RenderQueue) InitQueue(size int, xmlConfig string) {
 	}
 	renderQueue.isAvailable.L = &sync.Mutex{}
 	fmt.Println("Inited RenderQueue")
+	fmt.Println("The number of CPU Cores:", runtime.NumCPU())
 }
 
 func (renderQueue *RenderQueue) PutTileRender(render *TileRender) {
 	renderQueue.isAvailable.L.Lock()
 	defer renderQueue.isAvailable.L.Unlock()
 	renderQueue.queue = append(renderQueue.queue, render)
-	renderQueue.isAvailable.Broadcast()
+	renderQueue.isAvailable.Signal()
 }
 
 func (renderQueue *RenderQueue) GetTileRender() *TileRender {
