@@ -1,6 +1,7 @@
+.vscode
 patterns
 style
 symbols
 data
-js/leaflet
+js/leaflet/*
 cmd/*

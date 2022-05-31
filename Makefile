@@ -1,5 +1,3 @@
-.PHONY: test build
-
 export CGO_LDFLAGS = $(shell mapnik-config --libs)
 export CGO_CXXFLAGS = $(shell mapnik-config --cxxflags --includes --dep-includes | tr '\n' ' ')
 

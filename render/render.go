@@ -1,9 +1,7 @@
 package render
 
 import (
-	"fmt"
 	"log"
-	"runtime"
 	"strconv"
 	"sync"
 
@@ -31,45 +29,46 @@ func makeCoords(x, y float64, z int) (p0x, p0y, p1x, p1y float64) {
 }
 
 type TileRender struct {
-	m    mapnik.Map
-	opts mapnik.RenderOpts
+	m    *mapnik.Map
+	opts *mapnik.RenderOpts
 }
 
-type RenderQueue struct {
+type Queue struct {
 	queue       []*TileRender
 	isAvailable sync.Cond
 }
 
-func (renderQueue *RenderQueue) InitQueue(size int, xmlConfig string) {
+func (renderQueue *Queue) InitQueue(size int, xmlConfig string) error {
+	var err error = nil
 	renderQueue.queue = make([]*TileRender, size, size)
-	wg := sync.WaitGroup{}
+	errChan := make(chan error, len(renderQueue.queue))
+	defer close(errChan)
 	for i := range renderQueue.queue {
-		wg.Add(1)
 		renderQueue.queue[i] = new(TileRender)
 		go func(tile *TileRender) {
-			if err := tile.InitRender(xmlConfig); err != nil {
-				log.Fatal(err)
-			}
-			wg.Done()
+			err := tile.InitRender(xmlConfig)
+			errChan <- err
 		}(renderQueue.queue[i])
 	}
-	wg.Wait()
+	for i := 0; i < len(renderQueue.queue); i++ {
+		tmpErr := <-errChan
+		if tmpErr != nil {
+			err = tmpErr
+		}
+	}
 	renderQueue.isAvailable.L = &sync.Mutex{}
-	fmt.Println("Inited RenderQueue")
-	fmt.Println("The number of CPU Cores:", runtime.NumCPU())
+	log.Printf("Inited Queue")
+	return err
 }
 
-func (renderQueue *RenderQueue) PutTileRender(render *TileRender) {
+func (renderQueue *Queue) PutTileRender(render *TileRender) {
 	renderQueue.isAvailable.L.Lock()
 	defer renderQueue.isAvailable.L.Unlock()
 	renderQueue.queue = append(renderQueue.queue, render)
-	if cap(renderQueue.queue) > 10 {
-		fmt.Println(cap(renderQueue.queue))
-	}
 	renderQueue.isAvailable.Signal()
 }
 
-func (renderQueue *RenderQueue) GetTileRender() *TileRender {
+func (renderQueue *Queue) GetTileRender() *TileRender {
 	renderQueue.isAvailable.L.Lock()
 	defer renderQueue.isAvailable.L.Unlock()
 	for len(renderQueue.queue) == 0 {
@@ -81,25 +80,26 @@ func (renderQueue *RenderQueue) GetTileRender() *TileRender {
 }
 
 func (render *TileRender) InitRender(stylePath string) error {
-	render.m = *mapnik.New()
+	render.m = mapnik.New()
 	if err := render.m.Load(stylePath); err != nil {
 		return err
 	}
 	render.m.Resize(256, 256)
-	render.opts = mapnik.RenderOpts{Format: "png32"}
+	render.opts = &mapnik.RenderOpts{Format: "png32"}
 	return nil
 }
 
-func (render *TileRender) RenderToFile(x, y, z int) {
+func (render *TileRender) RenderToFile(x, y, z int) error {
 	x0, y0, x1, y1 := makeCoords(float64(x), float64(y), z)
 	render.m.ZoomTo(x0, y0, x1, y1)
-	if err := render.m.RenderToFile(render.opts, "prerendered/"+strconv.Itoa(z)+"/"+strconv.Itoa(x)+"_"+strconv.Itoa(y)+".png"); err != nil {
-		log.Fatal(err)
+	if err := render.m.RenderToFile(*render.opts, "prerendered/"+strconv.Itoa(z)+"/"+strconv.Itoa(x)+"_"+strconv.Itoa(y)+".png"); err != nil {
+		return err
 	}
+	return nil
 }
 
 func (render *TileRender) Render(x, y, z int) ([]byte, error) {
 	x0, y0, x1, y1 := makeCoords(float64(x), float64(y), z)
 	render.m.ZoomTo(x0, y0, x1, y1)
-	return render.m.Render(render.opts)
+	return render.m.Render(*render.opts)
 }

@@ -11,20 +11,21 @@ import (
 	"sync"
 )
 
-var queue render.RenderQueue
-
 const poolSize = 10
 
-func renderPool(ch <-chan render.Coords, wg *sync.WaitGroup) {
+func renderPool(ch <-chan render.Coords, wg *sync.WaitGroup, queue *render.Queue) {
 	for coords := range ch {
 		tileRender := queue.GetTileRender()
-		tileRender.RenderToFile(coords.X, coords.Y, coords.Z)
+		if err := tileRender.RenderToFile(coords.X, coords.Y, coords.Z); err != nil {
+			fmt.Println(err)
+		}
 		queue.PutTileRender(tileRender)
 	}
 	wg.Done()
 }
 
 func main() {
+	var queue render.Queue
 	var zoom = flag.Int("z", 0, "zoom level")
 	var xCenter = flag.Int("x", 0, "center X position")
 	var yCenter = flag.Int("y", 0, "center Y position")
@@ -40,11 +41,12 @@ func main() {
 		return
 	}
 	wg := sync.WaitGroup{}
-	queue.InitQueue(poolSize, "style.xml")
+	queue.InitQueue(poolSize, *xmlFile)
 	coordSender := make(chan render.Coords)
+	defer close(coordSender)
 	for i := 0; i < poolSize; i++ {
 		wg.Add(1)
-		go renderPool(coordSender, &wg)
+		go renderPool(coordSender, &wg, &queue)
 	}
 	err := os.MkdirAll("prerendered/"+strconv.Itoa(*zoom), os.ModePerm)
 	if err != nil {
@@ -55,7 +57,6 @@ func main() {
 			coordSender <- render.Coords{X: x, Y: y, Z: *zoom}
 		}
 	}
-	close(coordSender)
 	wg.Wait()
 	fmt.Println("Done")
 }

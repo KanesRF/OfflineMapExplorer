@@ -11,9 +11,9 @@
 				var home = {
   					lat: 55.45,
   					lng: 37.37,
-  					zoom: 5
+  					zoom: 8
 				}; 
-				var map = L.map('mapid').setView([home.lat, home.lng], 5);
+				var map = L.map('mapid').setView([home.lat, home.lng], home.zoom);
 
 				L.tileLayer('https://localhost:8080/{z}/{x}/{y}.png',
 				{    maxZoom: 10  }).addTo(map);
@@ -21,7 +21,7 @@
 
 
 				L.easyButton('<img src="/js/center.png">',function(btn,map){
-					map.setView([home.lat, home.lng], home.zoom);
+					map.setView([home.lat, home.lng], map.getZoom());
 				},'Center').addTo(map);
 			}
 		</script>	
