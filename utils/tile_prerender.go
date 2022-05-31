@@ -43,7 +43,6 @@ func main() {
 	wg := sync.WaitGroup{}
 	queue.InitQueue(poolSize, *xmlFile)
 	coordSender := make(chan render.Coords)
-	defer close(coordSender)
 	for i := 0; i < poolSize; i++ {
 		wg.Add(1)
 		go renderPool(coordSender, &wg, &queue)
@@ -52,11 +51,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for x := *xCenter - *radius; x < int(math.Pow(2, float64(*zoom))) && x < *xCenter+*radius; x++ {
-		for y := *yCenter - *radius; y < int(math.Pow(2, float64(*zoom))) && y < *yCenter+*radius; y++ {
+
+	var startX, startY int
+	if startX = *xCenter - *radius; startX < 0 {
+		startX = 0
+	}
+	if startY = *yCenter - *radius; startY < 0 {
+		startY = 0
+	}
+	for x := startX; x < int(math.Pow(2, float64(*zoom))) && x < *xCenter+*radius; x++ {
+		for y := startY; y < int(math.Pow(2, float64(*zoom))) && y < *yCenter+*radius; y++ {
 			coordSender <- render.Coords{X: x, Y: y, Z: *zoom}
 		}
 	}
+	close(coordSender)
 	wg.Wait()
 	fmt.Println("Done")
 }

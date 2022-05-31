@@ -42,24 +42,20 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	x, err := strconv.Atoi(vars["x"])
 	if err != nil {
-		w.Write([]byte("Invalid X"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	y, err := strconv.Atoi(vars["y"])
 	if err != nil {
-		w.Write([]byte("Invalid Y"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	z, err := strconv.Atoi(vars["z"])
 	if err != nil {
-		w.Write([]byte("Invalid Z"))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	if err := validateCoords(x, y, z); err != nil {
-		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -118,7 +114,6 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", mainPageHandler)
 	router.HandleFunc("/{z:[0-9]+}/{x:[0-9]+}/{y:[0-9]+}.png", tileHandler).Methods("GET")
-
 	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir("./js/"))))
 
 	srv := &http.Server{
