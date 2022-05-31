@@ -11,9 +11,9 @@
 				var home = {
   					lat: 55.45,
   					lng: 37.37,
-  					zoom: 8
+  					zoom: 5
 				}; 
-				var map = L.map('mapid').setView([home.lat, home.lng], 10);
+				var map = L.map('mapid').setView([home.lat, home.lng], 5);
 
 				L.tileLayer('https://localhost:8080/{z}/{x}/{y}.png',
 				{    maxZoom: 10  }).addTo(map);

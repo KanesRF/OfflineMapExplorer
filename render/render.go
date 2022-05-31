@@ -42,12 +42,18 @@ type RenderQueue struct {
 
 func (renderQueue *RenderQueue) InitQueue(size int, xmlConfig string) {
 	renderQueue.queue = make([]*TileRender, size, size)
+	wg := sync.WaitGroup{}
 	for i := range renderQueue.queue {
+		wg.Add(1)
 		renderQueue.queue[i] = new(TileRender)
-		if err := renderQueue.queue[i].InitRender(xmlConfig); err != nil {
-			log.Fatal(err)
-		}
+		go func(tile *TileRender) {
+			if err := tile.InitRender(xmlConfig); err != nil {
+				log.Fatal(err)
+			}
+			wg.Done()
+		}(renderQueue.queue[i])
 	}
+	wg.Wait()
 	renderQueue.isAvailable.L = &sync.Mutex{}
 	fmt.Println("Inited RenderQueue")
 	fmt.Println("The number of CPU Cores:", runtime.NumCPU())
@@ -57,6 +63,9 @@ func (renderQueue *RenderQueue) PutTileRender(render *TileRender) {
 	renderQueue.isAvailable.L.Lock()
 	defer renderQueue.isAvailable.L.Unlock()
 	renderQueue.queue = append(renderQueue.queue, render)
+	if cap(renderQueue.queue) > 10 {
+		fmt.Println(cap(renderQueue.queue))
+	}
 	renderQueue.isAvailable.Signal()
 }
 
@@ -84,7 +93,7 @@ func (render *TileRender) InitRender(stylePath string) error {
 func (render *TileRender) RenderToFile(x, y, z int) {
 	x0, y0, x1, y1 := makeCoords(float64(x), float64(y), z)
 	render.m.ZoomTo(x0, y0, x1, y1)
-	if err := render.m.RenderToFile(render.opts, "prerendered/"+strconv.Itoa(x)+"_"+strconv.Itoa(y)+"_"+strconv.Itoa(z)+".png"); err != nil {
+	if err := render.m.RenderToFile(render.opts, "prerendered/"+strconv.Itoa(z)+"/"+strconv.Itoa(x)+"_"+strconv.Itoa(y)+".png"); err != nil {
 		log.Fatal(err)
 	}
 }

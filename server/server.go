@@ -1,14 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 	"io/ioutil"
 	"log"
 	"net/http"
+	_ "net/http/pprof"
+	"offlinemapexp/render"
 	"strconv"
 	"time"
-
-	"offlinemapexp/render"
 
 	"github.com/gorilla/mux"
 	lru "github.com/hashicorp/golang-lru"
@@ -17,7 +17,7 @@ import (
 var queue render.RenderQueue
 var cache *lru.Cache
 
-const prerenderedZoom = 10
+var prerenderedZoom int
 
 func tileHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -43,11 +43,11 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//Is it prerendered?
 	if z >= prerenderedZoom {
-		filename := "prerendered/" + strconv.Itoa(x) + "_" + strconv.Itoa(y) + "_" + strconv.Itoa(z) + ".png"
+		filename := "prerendered/" + strconv.Itoa(z) + "/" + strconv.Itoa(x) + "_" + strconv.Itoa(y) + ".png"
 		image, err := ioutil.ReadFile(filename)
 		if err == nil {
 			w.Write(image)
-			go cache.Add(render.Coords{X: x, Y: y, Z: z}, image)
+			cache.Add(render.Coords{X: x, Y: y, Z: z}, image)
 			return
 		}
 	}
@@ -55,23 +55,24 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	tileRender := queue.GetTileRender()
 	defer queue.PutTileRender(tileRender)
 	image, err := tileRender.Render(x, y, z)
-	if len(image) < 200 {
-		fmt.Println("Bad render for ", render.Coords{X: x, Y: y, Z: z}, len(image))
-	}
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	w.Write(image)
-	go cache.Add(render.Coords{X: x, Y: y, Z: z}, image)
+	cache.Add(render.Coords{X: x, Y: y, Z: z}, image)
 }
 
 func mainPageHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Mainpage")
 	http.ServeFile(w, r, "js/main.html")
 }
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+	flag.IntVar(&prerenderedZoom, "z", 10, "min zoom of prerendered tiles")
+	flag.Parse()
+
 	var err error
 	cache, err = lru.New(1024)
 	if err != nil {
@@ -85,8 +86,10 @@ func main() {
 	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir("./js/"))))
 
 	srv := &http.Server{
-		Handler: http.TimeoutHandler(router, time.Second*30, ""),
-		Addr:    "127.0.0.1:8080",
+		Handler:      http.TimeoutHandler(router, time.Second*50, ""),
+		Addr:         "127.0.0.1:8080",
+		ReadTimeout:  time.Second * 20,
+		WriteTimeout: time.Second * 50,
 	}
 	log.Fatal(srv.ListenAndServeTLS("server.crt", "server.key"))
 }

@@ -2,4 +2,5 @@ patterns
 style
 symbols
 data
+js/leaflet
 cmd/*

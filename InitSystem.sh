@@ -1,6 +1,8 @@
+sudo apt-get install -y golang
 sudo apt-get install -y g++ gcc clang 
 #install python
 sudo apt-get install -y python python3
+sudo apt-get install -y python3-pip
 #install Mapnik
 sudo apt-get install -y git autoconf libtool libxml2-dev libbz2-dev \
 libgeos-dev libgeos++-dev libproj-dev gdal-bin libgdal-dev g++ \
@@ -50,12 +52,11 @@ npm install mapnik-reference
 node -e "console.log(require('mapnik-reference'))"
 carto -a "3.0.22" project.mml > style.xml
 #install postgres. This is 12 version, but u can always use more old versions
-sudo apt-get install -y postgresql postgis
-sudo apt-get install -y postgresql-contrib postgresql-12-postgis-3 postgresql-12-postgis-3-scripts
+sudo apt-get install -y postgresql postgis postgresql-contrib postgresql-postgis postgresql-postgis-scripts
 sudo service postgresql start
 #configure postgres database
 sudo -u postgres createuser -s $USER
-createdb gis
+sudo -u postgres createdb gis
 psql -d gis -c 'CREATE EXTENSION postgis; CREATE EXTENSION hstore;'
 psql -d gis -c 'ALTER TABLE geometry_columns OWNER TO postgres;'
 psql -d gis -c 'ALTER TABLE spatial_ref_sys OWNER TO  postgres;'
@@ -70,11 +71,13 @@ osm2pgsql \
 --database gis \
 --slim \
 --drop \
+-U $USER \
 --style openstreetmap-carto.style \
 --tag-transform-script openstreetmap-carto.lua \
 central-fed-district-latest.osm.pbf
 #now we need to generate 'data' folder, that Mapnik will use for render
 python3 -m pip install psycopg2-binary
+#maybe you'll have to give permissions to user write to 'data'
 scripts/get-external-data.py
 #now we generate indexes for our database
 HOSTNAME=localhost
