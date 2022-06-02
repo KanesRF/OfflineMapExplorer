@@ -105,7 +105,7 @@ cd openstreetmap-carto
 ```
 Установка шрифтов
 ``` sh
-sudo apt-get install -y fonts-noto-cjk fonts-noto-hinted fonts-noto-unhinted fonts-hanazono fonts-uniform
+sudo apt-get install -y fonts-noto-cjk fonts-noto-hinted fonts-noto-unhinted fonts-hanazono fonts-unifont
 git clone https://github.com/googlefonts/noto-emoji.git
 git clone https://github.com/googlefonts/noto-fonts.git
 sudo cp noto-emoji/fonts/NotoColorEmoji.ttf /usr/share/fonts/truetype/noto
