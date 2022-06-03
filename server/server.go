@@ -118,7 +118,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler:     http.TimeoutHandler(router, time.Second*50, ""),
-		Addr:        "127.0.0.1:8080",
+		Addr:        "0.0.0.0:8080",
 		ReadTimeout: time.Second * 20,
 	}
 	log.Fatal(srv.ListenAndServeTLS("server.crt", "server.key"))

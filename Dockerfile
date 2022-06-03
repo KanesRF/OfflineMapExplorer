@@ -42,6 +42,7 @@ RUN npm install -g carto && npm install mapnik-reference
 RUN carto -a "3.0.22" project.mml > style.xml
 RUN wget -c http://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
 RUN python3 -m pip install psycopg2-binary requests
-RUN /OfflineMapExplorer/scripts/init.sh
+RUN apt-get install -y sudo
+RUN sudo /bin/bash /OfflineMapExplorer/scripts/init.sh
 EXPOSE 8080
 CMD ["/bin/sh", "/OfflineMapExplorer/scripts/run.sh"]
