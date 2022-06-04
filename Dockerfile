@@ -43,10 +43,5 @@ RUN carto -a "3.0.22" project.mml > style.xml
 RUN wget -c http://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
 RUN python3 -m pip install psycopg2-binary requests
 RUN apt-get install -y sudo
-RUN sudo /bin/bash /OfflineMapExplorer/scripts/init.sh
-WORKDIR /OfflineMapExplorer/js
-RUN wget -c https://github.com/Leaflet/Leaflet/releases/download/v1.8.0/leaflet.zip && unzip leaflet.zip -d leaflet  && rm leaflet.zip && \ 
-    wget -c https://github.com/CliffCloud/Leaflet.EasyButton/archive/refs/tags/v2.4.0.zip && unzip v2.4.0.zip && rm v2.4.0.zip && \ 
-    cp Leaflet.EasyButton-2.4.0/src/* leaflet/ && rm -r Leaflet.EasyButton-2.4.0
-EXPOSE 8080
-CMD ["/bin/sh", "/OfflineMapExplorer/scripts/run.sh"]
+RUN sudo chmod 777 /OfflineMapExplorer/scripts/init.sh
+RUN /bin/bash /OfflineMapExplorer/scripts/init.sh
