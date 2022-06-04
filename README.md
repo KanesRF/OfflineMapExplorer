@@ -87,6 +87,8 @@ type Queue struct {
 
 ## Подготовка системы
 
+Данная сборка тестировалась на ubuntu 22
+
 Установка python, go, компиляторов
 ``` sh
 sudo apt-get install -y golang g++ gcc clang python python3 python3-pip
