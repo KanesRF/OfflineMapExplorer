@@ -1,0 +1,32 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+		<title>Offline map</title>
+		<link rel="stylesheet" charset="utf-8" href="js/leaflet/easy-button.css" />
+		<link rel="stylesheet" charset="utf-8" href="js/leaflet/leaflet.css" />
+		<script type="text/javascript" charset="utf-8" src="js/leaflet/leaflet.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/leaflet/easy-button.js"></script>
+		<script>
+			function onLoad() {
+				var home = {
+  					lat: 55.45,
+  					lng: 37.37,
+  					zoom: 8
+				}; 
+				var map = L.map('mapid').setView([home.lat, home.lng], home.zoom);
+
+				L.tileLayer('https://localhost:8080/{z}/{x}/{y}.png',
+				{    maxZoom: 10  }).addTo(map);
+
+
+
+				L.easyButton('<img src="/js/center.png">',function(btn,map){
+					map.setView([home.lat, home.lng], map.getZoom());
+				},'Center').addTo(map);
+			}
+		</script>	
+	</head>
+	<body onload="onLoad();"> 
+		<div id="mapid" style="height: 100vh;"></div>
+	</body>
+</html>
