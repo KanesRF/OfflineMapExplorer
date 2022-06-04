@@ -81,7 +81,7 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//Render
 	tileRender := queue.GetTileRender()
-	fmt.Println(x, y, z, "Got tile")
+	fmt.Println(x, y, z, "Got tile", tileRender)
 	defer queue.PutTileRender(tileRender)
 	image, err := tileRender.Render(x, y, z)
 	if err != nil {
@@ -115,7 +115,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	queue.InitQueue(poolSize, xmlPath)
+	err = queue.InitQueue(poolSize, xmlPath)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	router := mux.NewRouter()
 	router.HandleFunc("/", mainPageHandler)
 	router.HandleFunc("/{z:[0-9]+}/{x:[0-9]+}/{y:[0-9]+}.png", tileHandler).Methods("GET")
