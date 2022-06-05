@@ -86,6 +86,7 @@ type Queue struct {
 &nbsp;&nbsp;&nbsp;&nbsp; Для взаимодействия с сервером используется web-клиент, написанный с использованием библиотеки leaflet и плагина для неё [easy button](https://github.com/CliffCloud/Leaflet.EasyButton). Исходный код расположен в директории js. Клиент имеет три кнопки: уменьшить, увеличить приближение и вернуться к центру (в данном случае - город Москва) при текущем уровне приближения.
 
 ## Использование с помощью Docker
+Должны присутствовать scripts/run.sh и scripts/init.sh
 ``` sh
 docker build . 
 docker run --rm --shm-size=2g image
