@@ -88,7 +88,7 @@ type Queue struct {
 ## Использование с помощью Docker
 ``` sh
 docker build . 
-docker run --rm --shm-size=8g image
+docker run --rm --shm-size=2g image
 ```
 ## Подготовка системы
 
