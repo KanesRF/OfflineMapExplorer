@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math"
 	"net/http"
 	"offlinemapexp/render"
 	"strconv"
@@ -29,10 +28,10 @@ func validateCoords(x, y, z int) error {
 	if z < 0 || z > maxZoom {
 		return errors.New("Invalid Z")
 	}
-	if x < 0 || x >= int(math.Pow(2, float64(z))) {
+	if x < 0 || x >= 1<<z {
 		return errors.New("Invalid X")
 	}
-	if y < 0 || y >= int(math.Pow(2, float64(z))) {
+	if y < 0 || y >= 1<<z {
 		return errors.New("Invalid Y")
 	}
 	return nil

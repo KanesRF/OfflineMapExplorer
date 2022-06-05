@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math"
 	"offlinemapexp/render"
 	"os"
 	"strconv"
@@ -59,8 +58,8 @@ func main() {
 	if startY = *yCenter - *radius; startY < 0 {
 		startY = 0
 	}
-	for x := startX; x < int(math.Pow(2, float64(*zoom))) && x < *xCenter+*radius; x++ {
-		for y := startY; y < int(math.Pow(2, float64(*zoom))) && y < *yCenter+*radius; y++ {
+	for x := startX; x < 1<<*zoom && x < *xCenter+*radius; x++ {
+		for y := startY; y < 1<<*zoom && y < *yCenter+*radius; y++ {
 			coordSender <- render.Coords{X: x, Y: y, Z: *zoom}
 		}
 	}

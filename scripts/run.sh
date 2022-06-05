@@ -7,4 +7,4 @@ do
     sudo service postgresql restart
     sleep 30
 done
-./cmd/server -f style.xml -pool 4 -max_zoom 10 -z 5
+./cmd/server -f style.xml -pool 4 -max_zoom 10 -z 2
