@@ -60,7 +60,6 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	//Is tile in the cache?
-	fmt.Println(x, y, z, "is cache")
 	if cache.Contains(render.Coords{X: x, Y: y, Z: z}) {
 		image, exists := cache.Get(render.Coords{X: x, Y: y, Z: z})
 		if exists {
@@ -69,7 +68,6 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	//Is it prerendered?
-	fmt.Println(x, y, z, "is prerender")
 	if z >= prerenderedZoom {
 		filename := "prerendered/" + strconv.Itoa(z) + "/" + strconv.Itoa(x) + "_" + strconv.Itoa(y) + ".png"
 		image, err := ioutil.ReadFile(filename)
@@ -81,16 +79,13 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	//Render
 	tileRender := queue.GetTileRender()
-	fmt.Println(x, y, z, "Got tile", tileRender)
 	defer queue.PutTileRender(tileRender)
 	image, err := tileRender.Render(x, y, z)
 	if err != nil {
 		fmt.Println(x, y, z, "Error rendering")
-		w.Write([]byte("Error rendering"))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	fmt.Println(x, y, z, "Rendered")
 	w.Write(image)
 	cache.Add(render.Coords{X: x, Y: y, Z: z}, image)
 }

@@ -7,12 +7,11 @@ autoconf libtool libxml2-dev libbz2-dev \
 libgeos-dev libgeos++-dev libproj-dev gdal-bin libgdal-dev g++ \
 libmapnik-dev mapnik-utils python3-mapnik fonts-dejavu-core fontconfig \ 
 postgresql postgis postgresql-contrib postgresql-postgis postgresql-postgis-scripts  \ 
-osm2pgsql wget unzip gosu
-
+osm2pgsql wget unzip sudo
 RUN wget -c https://codeload.github.com/KanesRF/OfflineMapExplorer/zip/refs/heads/master -O OfflineMapExplorer.zip && unzip OfflineMapExplorer.zip && rm OfflineMapExplorer.zip && mv $(ls -d OfflineMapExplorer*) OfflineMapExplorer
 RUN wget -c https://codeload.github.com/gravitystorm/openstreetmap-carto/zip/refs/tags/v5.4.0 -O openstreetmap-carto.zip && unzip openstreetmap-carto.zip && rm openstreetmap-carto.zip && mv $(ls -d openstreetmap-carto*) openstreetmap-carto
-WORKDIR /openstreetmap-carto
 RUN apt-get install -y fonts-noto-cjk fonts-noto-hinted fonts-noto-unhinted fonts-hanazono ttf-unifont
+WORKDIR /openstreetmap-carto
 RUN wget -c https://codeload.github.com/googlefonts/noto-emoji/zip/refs/tags/v2.028 -O noto-emoji.zip && unzip noto-emoji.zip && rm noto-emoji.zip && mv $(ls -d noto-emoji*) noto-emoji
 RUN wget -c https://codeload.github.com/googlefonts/noto-fonts/zip/refs/tags/v20201206-phase3 -O noto-fonts.zip && unzip noto-fonts.zip && rm noto-fonts.zip && mv $(ls -d noto-fonts*) noto-fonts
 RUN cp noto-emoji/fonts/NotoColorEmoji.ttf \
@@ -39,9 +38,18 @@ RUN cp NotoSansSyriacEastern-Regular.ttf /usr/share/fonts/truetype/noto
 WORKDIR /openstreetmap-carto
 RUN fc-cache -fv
 RUN npm install -g carto && npm install mapnik-reference
+COPY ./scripts/init.sh .
+RUN python3 -m pip install psycopg2-binary requests
 RUN carto -a "3.0.22" project.mml > style.xml
 RUN wget -c http://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
-RUN python3 -m pip install psycopg2-binary requests
-RUN apt-get install -y sudo
-RUN sudo chmod 777 /OfflineMapExplorer/scripts/init.sh
-RUN /bin/bash /OfflineMapExplorer/scripts/init.sh
+RUN sudo chmod 777 init.sh
+RUN sudo /bin/bash init.sh
+RUN sed -i -e 's/<Map/<Map buffer-size="512"/g' /OfflineMapExplorer/style.xml
+WORKDIR /OfflineMapExplorer/js
+RUN wget -c https://github.com/Leaflet/Leaflet/releases/download/v1.8.0/leaflet.zip && unzip leaflet.zip -d leaflet  && rm leaflet.zip && \ 
+    wget -c https://github.com/CliffCloud/Leaflet.EasyButton/archive/refs/tags/v2.4.0.zip && unzip v2.4.0.zip && rm v2.4.0.zip && \ 
+    cp Leaflet.EasyButton-2.4.0/src/* leaflet/ && rm -r Leaflet.EasyButton-2.4.0
+EXPOSE 8080
+COPY ./scripts/run.sh /
+RUN sudo chmod 777 /run.sh
+CMD /bin/sh /run.sh
