@@ -1,7 +1,10 @@
 cd /OfflineMapExplorer
 sudo service postgresql start
-sleep 60
-sudo service postgresql restart
 export GOMAXPROCS=8
-ps -e | grep postgres
+until sudo pg_isready -p 5432 -U postgres
+do
+    sleep 30
+    sudo service postgresql restart
+    sleep 30
+done
 ./cmd/server -f style.xml -pool 8 -max_zoom 10 -z 7

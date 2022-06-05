@@ -121,7 +121,7 @@ func main() {
 	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir("./js/"))))
 
 	srv := &http.Server{
-		Handler:     http.TimeoutHandler(router, time.Second*50, ""),
+		Handler:     http.TimeoutHandler(router, time.Second*90, ""),
 		Addr:        "0.0.0.0:8080",
 		ReadTimeout: time.Second * 20,
 	}

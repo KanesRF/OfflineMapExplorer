@@ -46,4 +46,5 @@ RUN wget -c https://github.com/Leaflet/Leaflet/releases/download/v1.8.0/leaflet.
     wget -c https://github.com/CliffCloud/Leaflet.EasyButton/archive/refs/tags/v2.4.0.zip && unzip v2.4.0.zip && rm v2.4.0.zip && \ 
     cp Leaflet.EasyButton-2.4.0/src/* leaflet/ && rm -r Leaflet.EasyButton-2.4.0
 EXPOSE 8080
+COPY ./scripts/run.sh /OfflineMapExplorer/scripts/run.sh
 CMD sudo /bin/sh /OfflineMapExplorer/scripts/run.sh
