@@ -110,7 +110,7 @@ apt-get install -y libharfbuzz-dev mapnik-utils
 git clone https://github.com/gravitystorm/openstreetmap-carto.git
 cd openstreetmap-carto
 ```
-Установка шрифтов
+Установка шрифтов. При использовании ubuntu 20 нужно заменить пакет fonts-unifont на ttf-unifont в следующей команде
 ``` sh
 sudo apt-get install -y fonts-noto-cjk fonts-noto-hinted fonts-noto-unhinted fonts-hanazono fonts-unifont
 git clone https://github.com/googlefonts/noto-emoji.git
@@ -203,7 +203,7 @@ psql -d gis -f indexes.sql
 make all
 ```
 ## Примечания
-- Некоторые наименования могут некорректно отображаться при отрисовке (например, на стыке клеток). Для решения этой проблемы нужно добавить значение buffer-size="512" к атрибуту Map. Однако в таком случае время отрисовки значительно увеличивается.
+- Некоторые наименования могут некорректно отображаться при отрисовке (например, на стыке клеток). Для решения этой проблемы нужно добавить значение buffer-size="512" к атрибуту Map в sytle.xml. Однако в таком случае время отрисовки значительно увеличивается.
 - В скрипте /script/run.sh можно редактировать параметры запуска сервера, чисто потоков и время, выделенное на запуск Postgresql
 
 
