@@ -40,10 +40,10 @@ RUN fc-cache -fv
 RUN npm install -g carto && npm install mapnik-reference && python3 -m pip install psycopg2-binary requests
 RUN carto -a "3.0.22" project.mml > style.xml
 RUN wget -c http://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
-RUN sudo /bin/bash /OfflineMapExplorer/init.sh && sed -i -e 's/<Map/<Map buffer-size="512"/g' /OfflineMapExplorer/style.xml
+RUN sudo /bin/bash /OfflineMapExplorer/scripts/init.sh && sed -i -e 's/<Map/<Map buffer-size="512"/g' /OfflineMapExplorer/style.xml
 WORKDIR /OfflineMapExplorer/js
 RUN wget -c https://github.com/Leaflet/Leaflet/releases/download/v1.8.0/leaflet.zip && unzip leaflet.zip -d leaflet  && rm leaflet.zip && \ 
     wget -c https://github.com/CliffCloud/Leaflet.EasyButton/archive/refs/tags/v2.4.0.zip && unzip v2.4.0.zip && rm v2.4.0.zip && \ 
     cp Leaflet.EasyButton-2.4.0/src/* leaflet/ && rm -r Leaflet.EasyButton-2.4.0
 EXPOSE 8080
-CMD sudo /bin/sh /OfflineMapExplorer/run.sh
+CMD sudo /bin/sh /OfflineMapExplorer/scripts/run.sh
