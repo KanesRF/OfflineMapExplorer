@@ -40,6 +40,7 @@ RUN fc-cache -fv
 RUN npm install -g carto && npm install mapnik-reference && python3 -m pip install psycopg2-binary requests
 RUN carto -a "3.0.22" project.mml > style.xml
 RUN wget -c http://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
+COPY ./scripts/init.sh /OfflineMapExplorer/scripts/init.sh
 RUN sudo /bin/bash /OfflineMapExplorer/scripts/init.sh && sed -i -e 's/<Map/<Map buffer-size="512"/g' /OfflineMapExplorer/style.xml
 WORKDIR /OfflineMapExplorer/js
 RUN wget -c https://github.com/Leaflet/Leaflet/releases/download/v1.8.0/leaflet.zip && unzip leaflet.zip -d leaflet  && rm leaflet.zip && \ 
