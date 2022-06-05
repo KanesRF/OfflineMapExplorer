@@ -82,7 +82,7 @@ func tileHandler(w http.ResponseWriter, r *http.Request) {
 	defer queue.PutTileRender(tileRender)
 	image, err := tileRender.Render(x, y, z)
 	if err != nil {
-		fmt.Println(x, y, z, "Error rendering")
+		fmt.Println(x, y, z, "Error rendering", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
